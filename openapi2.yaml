@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+    version: '1.0.0'
+    title: 'HR API'
+    description: 'an API that allows users to obtain existing information of employees or post info of new employees'
+    contact: 
+        name: Alexander Binnekamp
+        url: https://github.com/alexanderbinnekamp
+        email: alexanderbinnekamp@hotmail.com
+
+servers:
+    - url: https://dev.foo.com/v1
+      description: Dev Server
+    - url: https://prod.foo.com/v1
+      description: Prod Server
+
+paths:
+  /employees:
+    get:
+      description: obtain information about employees from the HR database
+      parameters: 
+        - name: bodyLimit
+          in: query
+          description: the amount of employees returned
+          schema: 
+            type: integer
+            minimum: 10
+            maximum: 20
+            example: 15
+        - name: pageLimit
+          in: query
+          description: the amount of pages returned
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 2
+      
+      responses: 
+        200: 
+          description: Successful pull of employee info
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Employees'
+    
+    post:
+      description: create a new employee in the HR database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Employee'
+
+      responses:
+        200:
+          description: succesfully created a new employee
+
+  /employees/{id}:
+    get:
+      description: obtain information about a specific employee
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            description: the ID of the employee
+            example: 54
+    
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+                schema: 
+                  type: object
+                  $ref: '#/components/schemas/Employee'
+
+components:
+  schemas:
+    Employees:
+      description: model containing array of employee info
+      type: array
+      items:
+        $ref: '#/components/schemas/Employee'
+    Employee:
+      description: model containing employee info
+      properties:
+        id: 
+          type: integer
+          example: 4
+        employee name:
+          type: string
+          example: Dave Davidson
+        employee title: 
+          type: string
+          example: Developer
+    
